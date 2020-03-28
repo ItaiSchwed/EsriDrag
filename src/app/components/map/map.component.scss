@@ -6,3 +6,32 @@
     height: 100%;
     width: 100%;
 }
+
+.buttons {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.button{
+  border-radius: 0;
+  box-shadow: 0 0 2px gray;
+}
+
+.activate-button{
+  @extend .button;
+  background-color: #fff;
+  color: black;
+}
+
+.deactivate-button{
+  @extend .button;
+  background-color: rgb(240, 240, 240);
+  color: #6e6e6e;
+}
+
+.activate-button:hover{
+  background: rgb(240, 240, 240);
+}

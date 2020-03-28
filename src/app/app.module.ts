@@ -27,5 +27,5 @@ import { PointsLayerService } from './services/points-layer/points-layer.service
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(pointsLayerService: PointsLayerService) { }
+  constructor() { }
  }

@@ -1,1 +1,12 @@
 <div #mapViewNode id="mapViewNode"></div>
+<div class="buttons">
+  <button [ngClass]="classes[Action.CREATE]" class="activate-button" (click)="action(Action.CREATE)"
+          [disabled]="disabled(Action.CREATE)" mat-raised-button>create
+  </button>
+  <button [ngClass]="classes[Action.UPDATE]" class="activate-button" (click)="action(Action.UPDATE)"
+          [disabled]="disabled(Action.UPDATE)" mat-raised-button>update
+  </button>
+  <button [ngClass]="classes[Action.DELETE]" class="activate-button" (click)="action(Action.DELETE)"
+          [disabled]="disabled(Action.DELETE)" mat-raised-button>delete
+  </button>
+</div>

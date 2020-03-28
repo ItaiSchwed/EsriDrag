@@ -1,39 +1,53 @@
 import { Injectable, ElementRef } from '@angular/core';
-import Map from "arcgis-js-api/Map";
-import MapView from "arcgis-js-api/views/MapView";
+import Map from 'arcgis-js-api/Map';
+import MapView from 'arcgis-js-api/views/MapView';
 
-import esri = __esri
-import { Subject } from 'rxjs';
+import esri = __esri;
+import {BehaviorSubject, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
 
+  constructor() {}
+
   public map: esri.Map;
-  public mapView: Subject<esri.MapView> = new Subject<esri.MapView>();
+  public mapView$: Subject<esri.MapView> = new Subject<esri.MapView>();
+  // tslint:disable-next-line:variable-name
   private _mapView: esri.MapView;
 
   private listener: IHandle;
 
-  constructor(){}
+  private static getMapProperties(): esri.MapProperties {
+    return {
+      basemap: 'streets'
+    };
+  }
 
   public initMap(mapViewEl: ElementRef) {
     try {
-      const mapProperties: esri.MapProperties = this.getMapProperties();
+      const mapProperties: esri.MapProperties = MapService.getMapProperties();
       this.map = new Map(mapProperties);
       const mapViewProperties: esri.MapViewProperties = this.getMapViewProperties(mapViewEl);
       this._mapView = new MapView(mapViewProperties);
-      this._mapView.when(() => this.mapView.next(this._mapView));
-    }
-    catch (error) {
-      console.error("Esri: ", error);
+      this._mapView.when(() => {
+        this.mapView$.next(this._mapView);
+        this.mapView$ = new BehaviorSubject<esri.MapView>(this._mapView);
+      });
+    } catch (error) {
+      console.error('Esri: ', error);
     }
   }
 
-  public setUpClickHandler(listener: esri.MapViewClickEventHandler){
+  public setClickHandler(listener: esri.MapViewClickEventHandler) {
     this.listener?.remove();
-    this.listener = this._mapView.on("click", listener);
+    this.listener = this._mapView.on('click', listener);
+  }
+
+  public stopClickHandler() {
+    this.listener?.remove();
+    this.listener = undefined;
   }
 
   private getMapViewProperties(mapViewEl: ElementRef): esri.MapViewProperties {
@@ -45,16 +59,10 @@ export class MapService {
     };
   }
 
-  private getMapProperties(): esri.MapProperties {
-    return {
-      basemap: "streets"
-    };
-  }
-
   destroyMap() {
     if (this._mapView) {
       this._mapView.container = null;
     }
-    this.listener.remove();
+    this.listener?.remove();
   }
 }
